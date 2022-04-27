@@ -49,5 +49,10 @@
 - Python
 - API Framework
 - aiogram
+  - uvloop
+  - ujson
+  - cchardet
+  - aiodns
+  - aiohttp[speedups]
 - postgresql или какое-нибудь другое решение
 - Redis/Celery
