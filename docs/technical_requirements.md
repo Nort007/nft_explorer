@@ -55,4 +55,5 @@
   - aiodns
   - aiohttp[speedups]
 - postgresql или какое-нибудь другое решение
+  - orm sqalchemy or peewee
 - Redis/Celery
