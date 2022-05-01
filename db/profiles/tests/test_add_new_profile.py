@@ -18,6 +18,6 @@ class TestProfile(unittest.TestCase):
         dbase.close()
 
     def test_add_new_profile(self):
-        profile = ProfileModel.create(is_bot=False, first_name='John', username='qwerty', lang_code='en')
+        profile = ProfileModel.create(is_bot=False, first_name='John', username='qwerty', lang_code='en', user_id=123)
         profile.save()
         assert profile
