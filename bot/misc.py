@@ -7,7 +7,8 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 import logging
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+logger = logging.getLogger(__name__)
 env = Path(os.path.dirname(__file__)).parent.resolve().joinpath('.env')
 if os.path.isfile(env):
     load_dotenv(env)
