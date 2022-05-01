@@ -27,8 +27,8 @@ multidict==6.0.2
 numpy==1.22.3
 packaging==21.3
 pandas==1.4.2
+peewee==3.14.10
 pefile==2021.9.3
-pewee==0.1.0.dev9
 prompt-toolkit==3.0.29
 pycares==4.1.2
 pycparser==2.21
