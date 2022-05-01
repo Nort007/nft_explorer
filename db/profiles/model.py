@@ -2,7 +2,7 @@ from peewee import CharField, BooleanField
 from db.base.base_model import BaseModel
 
 
-class Profile(BaseModel):
+class ProfileModel(BaseModel):
     is_bot: bool = BooleanField(default=False)
     first_name: str = CharField(null=False)
     username: str = CharField(null=False)
