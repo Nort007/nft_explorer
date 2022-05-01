@@ -8,6 +8,8 @@ class ProfileModel(BaseModel):
     first_name: str = CharField(null=False)
     username: str = CharField(null=False)
     lang_code: str = CharField(null=False)
+    banned: bool = BooleanField(default=False)
+    count_of_ban: int = IntegerField(default=0)
 
     class Meta:
         table_name = 'profiles'
