@@ -1,4 +1,4 @@
-from peewee import CharField, ForeignKeyField, BooleanField
+from peewee import CharField, BooleanField
 from db.base.base_model import BaseModel
 
 
