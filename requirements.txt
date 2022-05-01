@@ -30,6 +30,8 @@ pandas==1.4.2
 peewee==3.14.10
 pefile==2021.9.3
 prompt-toolkit==3.0.29
+psycopg2==2.9.3
+psycopg2-binary==2.9.3
 pycares==4.1.2
 pycparser==2.21
 pyparsing==3.0.8
