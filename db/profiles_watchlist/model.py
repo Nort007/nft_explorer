@@ -5,8 +5,8 @@ from db.watchlist.model import WatchlistModel
 
 
 class ProfileWatchlistModel(BaseModel):
-    profile_id: int = ForeignKeyField(WatchlistModel, backref='watchlist')
-    watchlist_id: int = ForeignKeyField(ProfileModel, backref='profiles')
+    profile_id: int = ForeignKeyField(ProfileModel, backref='watchlist')
+    watchlist_id: int = ForeignKeyField(WatchlistModel, backref='profiles')
 
     class Meta:
         db_table = 'profiles_watchlist'
