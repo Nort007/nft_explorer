@@ -5,7 +5,7 @@ from db.profiles.model import ProfileModel
 
 
 class BanModel(BaseModel):
-    expiration: datetime = DateTimeField(null=datetime.now)
+    expiration: datetime = DateTimeField(null=False)
     profile_id = ForeignKeyField(ProfileModel, backref='bans')
 
     class Meta:
