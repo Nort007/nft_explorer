@@ -21,3 +21,5 @@ async def new_nft_to_watchlist(q: types.Message):
 async def valid_data(q: types.Message, state: FSMContext):
     """Проверяет валидность данных путем обработки через запрос по апи и возвращение результата"""
     # await call.answer(cache_time=10)
+    await q.answer("Получены данные. Проверяй редис.")
+    curr_data = await state.update_data(name_or_address=q.text)

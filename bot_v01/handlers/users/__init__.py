@@ -1,7 +1,7 @@
 from aiogram import Dispatcher
 from .my_watchlist import watchlist_command
 from .purchase import (selected_nft, edit_selected_nft, edit_selected_conditions, ConditionState, check_valid_condition)
-from .purchases_new_nft import new_nft_to_watchlist
+from .purchases_new_nft import new_nft_to_watchlist, valid_data, NFTState
 
 
 def setup(dp: Dispatcher):
@@ -21,4 +21,5 @@ def setup(dp: Dispatcher):
 
 
 def setup_purchases_new_nft(dp: Dispatcher):
+    dp.register_message_handler(valid_data, state=NFTState.name_or_address)
     dp.register_message_handler(new_nft_to_watchlist, commands=['newnft'])
