@@ -62,14 +62,9 @@ async def edit_selected_conditions(call: CallbackQuery, state: FSMContext):
     cb_data = call.data.split(':')
     selected_condition = cb_data[1]
     await state.update_data(condition=selected_condition)
-    # list_of_conditions = cb_data[-1][1:-1].split(', ')
-    # prepare_dict = dict(zip(['gt', 'ge', 'lt', 'le', 'eq'], list_of_conditions))
-    # nft_name = cb_data[-2].replace('_', ' ')
     logger.debug(f"Selected Condition: {selected_condition}")
-    # description = text_to_edit_selected_condition(nft_name, selected_condition, prepare_dict[selected_condition])
-    # await call.message.edit_text(text=f"{description}", reply_markup=edit_sub_conditions_menu(nft_name=nft_name))
     await call.message.answer(text='Okey, send me a new condition.')
-    # await ConditionState.value_of_condition.set()
+    await ConditionState.value_of_condition.set()
 
 
 async def check_valid_condition(message: Message, state: FSMContext, numb_of_failed_attempts: int = -3):
