@@ -29,6 +29,13 @@ def explore_data(html: str = None, file: str = None, elements: dict = None) -> j
             return data
 
 
+def explore_data_by_element(html: str = None, tag: str = 'div', attribute: str = 'class', el: str = "") -> None:
+    soup = BeautifulSoup(html, 'html.parser')
+    data = soup.find_all(tag, {attribute: el})
+    print(soup.prettify())
+    return data
+
+
 def save_file(data):
     """Сохраняет данные в файл"""
     t = time.strftime('%d_%m_%y_%H:%M:%S', time.gmtime())
@@ -36,7 +43,7 @@ def save_file(data):
         return json.dump(data, f)
 
 
-url = 'https://opensea.io/collection/proof-moonbirds'
+url = 'https://opensea.io/assets?search[query]=0x524cab2ec69124574082676e6f654a18df49a048'
 headers = {
     'Referer': 'https://opensea.io/',
     'Content-Type': 'application/json',
@@ -48,10 +55,13 @@ headers = {
 ELEMENTS = {
         'script': {'id': '__NEXT_DATA__'}
     }
-if __name__ == '__main__':
-    # text = scrape(url, headers)
+
+# if __name__ == '__main__':
+#     text = scrape(url, headers)
     # explore_html = explore_data(html=text, elements=ELEMENTS)
     # save_file(explore_html)
-    explore_file = explore_data(file='opensea_data_26_04_22_18:39:28.json', elements=ELEMENTS)
-    d = explore_file['props']['relayCache'][0][1]['data']['assets']['search']['edges'][0]
-    print(json.dumps(d, indent=4))
+    # explore_file = explore_data(file='opensea_data_16_05_22_10:57:41.json', elements=ELEMENTS)
+    # d = explore_file['props']['relayCache'][0][1]['data']['assets']['search']['edges'][0]
+    # print(json.dumps(d, indent=4))
+    # exp_by_el = explore_data_by_element(html=text, tag='div', attribute='class', el='slick-track')
+    # print(exp_by_el)
