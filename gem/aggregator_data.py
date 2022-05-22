@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 from pydantic import BaseModel
-from random import uniform
+from random import uniform, randint
 
 
 env = Path(os.path.dirname(__file__)).parent.resolve().joinpath('.env')
@@ -20,11 +20,11 @@ class Components(BaseModel):
     url: str = os.getenv('GEMLAB_URL')
 
 
-component = Components()
+data = Components()
+URL = data.url
 HEADER = {
-    'authority': component.authority,
-    'method': 'OPTIONS',
-    'path': '/collections',
+    'authority': data.authority,
+    'path': '/search',
     'scheme': 'https',
     'accept': '*/*',
     'accept-encoding': 'gzip, deflate, br',
@@ -32,16 +32,16 @@ HEADER = {
     'access-control-request-headers': 'content-type, x-api-key',
     'access-control-request-method': 'POST',
     'dnt': '1',
-    'origin': component.origin,
-    'referer': component.referer,
+    'origin': data.origin,
+    'referer': data.referer,
     'sec-fetch-dest': 'empty',
     'sec-fetch-mode': 'cors',
     'sec-fetch-site': 'cross-site',
     'sec-gpc': '1',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36',
 }
 PAYLOAD = {
-   "limit": 2,
+   "limit": 1,
    "fields": {
       "name": 1,
       "symbol": 1,
@@ -70,7 +70,7 @@ PAYLOAD = {
 }
 
 
-def generate_payload(default_payload: dict, params: dict) -> dict:
+def generate_payload(default_payload: dict = PAYLOAD, params: dict = None) -> dict:
     # {"filters": {'searchText': 'Lil pudgys'}}
     default_payload.update(params)
     return default_payload
@@ -80,14 +80,75 @@ def gem_aggregator(url: str, header: dict, payload: dict):
     with requests.Session() as session:
         session.headers.update(header)
         options_response = session.options(url)
-        if options_response.status_code == 204:
+        print(options_response.status_code)
+        if options_response.status_code == 200:
             session.headers.update({'method': 'POST'})
         time.sleep(round(uniform(0.300, 0.700), 3))
         post_response = session.post(url, json=payload)
+        print(post_response.status_code)
         if post_response.status_code == 200:
-            return post_response.json()
+            return post_response
 
 
-def send_request(additional_payload: dict, url: str = component.url, header: dict = HEADER, payload: dict = PAYLOAD):
-    payload = generate_payload(default_payload=payload, params=additional_payload)
+def send_request(payload: dict, url: str = data.url, header: dict = HEADER):
     return gem_aggregator(url=url, header=header, payload=payload)
+
+
+def gem_agg_only_post(url: str, header: dict, payload: dict):
+    with requests.Session() as session:
+        session.headers.update(header)
+        # session.headers.update({'method': 'POST'})
+        post_response = session.post(url, json=payload)
+        return post_response
+
+
+class GemException(BaseException):
+    def __init__(self, m):
+        self.msg = m
+
+    def __str__(self):
+        return self.msg
+
+
+class GemAggregator:
+    def __init__(self, header: dict, payload: dict, name: str = None, address: str = None, by_name: bool = True):
+        self.payload = payload
+        self.header = header
+        self.name = name
+        self.address = address
+        self.by_name = by_name
+        self.session = requests.Session()
+
+    def __header_for_search(self):
+        self.header.update({'method': 'POST'})
+        self.header.update({'authority': 'search.gemlabs.xyz'})
+        self.header.update({'path': '/search'})
+
+    def __prepare_payload(self):
+        self.payload.update(filters={'searchText': self.name})
+
+    def __prepare_session_by_name(self):
+        self.__header_for_search()
+        self.session.headers.update(self.header)
+
+    def __prepare_session_by_address(self):
+        self.__header_for_search()
+        self.session.headers.update(self.header)
+        self.payload.update(filters={'address': self.address})
+
+    def get_response(self):
+        if self.by_name:
+            self.__prepare_session_by_name()
+            if self.name is None:
+                raise GemException('Name is None')
+            self.__prepare_payload()
+            response = self.session.post(data.url, json=self.payload)
+            print(self.session.headers)
+            if response.status_code == 200:
+                return response.json()
+
+    
+
+
+t = GemAggregator(header=HEADER, payload=PAYLOAD, name='Lil pudgys')
+print(t.get_response())
