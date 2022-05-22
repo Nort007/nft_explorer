@@ -1,9 +1,8 @@
 from aiogram.types import CallbackQuery, Message
 from bot_v01.services.service_db import get_information_of_selected_nft, update_selected_condition
 from bot_v01.keyboards.inline.settings_menu import main_settings_menu
-from bot_v01.keyboards.inline.settings_menu import edit_conditions_menu, edit_sub_conditions_menu
+from bot_v01.keyboards.inline.settings_menu import edit_conditions_menu
 from bot_v01.services.prepare_data_of_conditions import condition_data
-from bot_v01.services.service_preparing_data_of_purchase import text_to_edit_selected_condition
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher import FSMContext
 from bot_v01.misc import logger
