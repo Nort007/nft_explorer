@@ -1,5 +1,3 @@
-import json
-
 from db.profiles.model import ProfileModel
 from db.profiles_watchlist.model import ProfileWatchlistModel
 from db.watchlist.model import WatchlistModel
