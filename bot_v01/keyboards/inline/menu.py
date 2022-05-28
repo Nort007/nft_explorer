@@ -2,6 +2,7 @@ from bot_v01.services.service_db import get_watchlist
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bot_v01.keyboards.inline.callback_datas import wl_callback, wl_new_nft, wl_callback_del
 import peewee
+import re
 
 
 def watchlist_menu(user_id, del_menu: bool = False):
@@ -16,7 +17,7 @@ def watchlist_menu(user_id, del_menu: bool = False):
     user_watchlist = get_watchlist(user_id)
     try:
         for watchlist in list(user_watchlist.dicts()):
-            cb_action = watchlist['name'].lower().replace(' ', '_')
+            cb_action = re.sub('(:) | ()', '_', watchlist['name'].lower())
             if del_menu:
                 keyboard.add(
                     InlineKeyboardButton(text=watchlist['name'],

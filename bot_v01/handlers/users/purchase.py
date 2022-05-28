@@ -18,8 +18,8 @@ async def selected_nft(call: CallbackQuery, state: FSMContext):
     """Выбирается конкретный объект из списка и этот метод отдает детальную информацию
     из базы данных по данной нфт для конкретного юзера если она за ним привязана"""
     await call.answer(cache_time=10)
+    print('watchlist', call)
     call_data = call.data.split(':')
-    print('watchlist', call_data)
     nft_name = call_data[1].replace('_', ' ')
     info = get_information_of_selected_nft(nft_name)
     output_text = f"Here it is {info['name']}\n" \
