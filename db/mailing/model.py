@@ -5,7 +5,7 @@ from db.profiles.model import ProfileModel
 
 class MailingModel(BaseModel):
     public_channel: str = CharField(max_length=254)
-    private_channel: int = BigIntegerField()
+    chat_id: int = BigIntegerField(null=True)
     active: bool = BooleanField(default=False)
     profile_id: int = ForeignKeyField(ProfileModel)
 
