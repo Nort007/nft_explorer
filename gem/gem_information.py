@@ -3,7 +3,6 @@ from bot_v01.selenium_tools import BaseDisplay
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-
 URL = 'https://gem.xyz'
 
 
@@ -53,13 +52,3 @@ class Gem(BaseDisplay):
         browser_options = self._prepare_options()
         self.driver = webdriver.Chrome(executable_path='chromedriver', options=browser_options)
         return self.driver
-
-
-# if __name__ == '__main__':
-#     gem = Gem('0x524cab2ec69124574082676e6f654a18df49a048')
-#     driver = gem.start()
-#     driver.get(gem.by_collection_address())
-#     driver.implicitly_wait(60)
-#     information = gem.initial_information_by_tag()
-#     # exec_script = driver.execute_script(("return window.performance.getEntries();"))
-#     print(information)

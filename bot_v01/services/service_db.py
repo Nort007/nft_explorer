@@ -5,10 +5,8 @@ from db.conditions.model import ConditionModel
 from playhouse.shortcuts import model_to_dict
 import peewee
 from peewee import fn
-try:
-    from bot_v01.misc import logger
-except ModuleNotFoundError:
-    pass
+from bot_v01.misc import logger
+from db.base.base_model import psql_db
 
 
 def is_banned(ban: bool, user_id: int):
@@ -35,20 +33,56 @@ def compare_user_id_from_db(user: dict, msg: str):
     return True
 
 
-def get_watchlist(user_id: int = None):
-    """Список нфт отслеживаемые юзером"""
+def query_option(option: str):
+    """В частом случае функция возвращает опции из /newnft когда юзер добавляет коллекцию себе по адресу или имени.
+    Возвращает в основном для where в запросе к базе данных."""
+    if option == 'name':
+        return WatchlistModel.name
+    elif option == 'address':
+        return WatchlistModel.address
+    else:
+        logger.error(f"Option '{option}' is not supported")
+        raise ValueError(f"Option '{option}' is not supported")
+
+
+def get_watchlist(user_id: int = None, option: str = None, value: str = None):
+    """Список нфт отслеживаемые юзером, если нет параметров, то все коллекции отслеживаемые юзером."""
     watchlist: dict = {}
     if user_id is not None:
         query = (WatchlistModel
                  .select(WatchlistModel)
                  .join(ProfileWatchlistModel)
                  .join(ProfileModel)
-                 .where(ProfileModel.user_id == user_id))
-        logger.debug(f"query: {query.sql()}")
-        if len(query) > 0:
-            for i in query:
-                watchlist[i.name] = i.address
-    return watchlist
+                 .where(ProfileModel.user_id == user_id)
+                 )
+        # logger.debug(f"query: {query.sql()}")
+        # if len(query) > 0:
+        #     for i in query:
+        #         watchlist[i.name] = i.address
+    return query
+
+
+def select_chosen_collection_by_user(user_id: int = None, option: str = None, value: str = None):
+    """Возвращает все или конкретную коллекцию отслеживаемые юзером."""
+    # where_option = query_option(option)
+    if option == 'name':
+        where_join = (fn.LOWER(WatchlistModel.name) == value.lower()) | (fn.LOWER(WatchlistModel.slug) == value.lower())
+    elif option == 'address':
+        where_join = WatchlistModel.address == value
+    else:
+        return
+    q = (WatchlistModel
+         .select(WatchlistModel, ProfileWatchlistModel, ProfileModel)
+         .join(ProfileWatchlistModel, on=(ProfileWatchlistModel.watchlist_id == WatchlistModel.id))
+         .join(ProfileModel, on=(ProfileModel.id == ProfileWatchlistModel.profile_id)).where(ProfileModel.user_id == user_id)
+         .where(where_join)
+         )
+    logger.debug(f"query: {q.sql()}")
+    return q
+
+
+def add_new_bind_to_profiles_watchlist():
+    pass
 
 
 def all_wl():
@@ -57,13 +91,28 @@ def all_wl():
     return names
 
 
-def get_information_of_selected_nft(nft_name: str):
+def get_information_of_selected_nft(option: str, value: str):
     """Возвращает информацию об конкретной нфт"""
+    # where_option = query_option(option)
+    if option == 'name':
+        where_option = (fn.LOWER(WatchlistModel.name) == value) | (fn.LOWER(WatchlistModel.slug) == value)
+    elif option == 'address':
+        where_option = WatchlistModel.address == value
+    else:
+        return
     q = (WatchlistModel
          .select(WatchlistModel)
-         .where(fn.LOWER(WatchlistModel.name) == nft_name))
+         .where(where_option)
+         )
     logger.debug(f"query: {q.sql()}")
-    return model_to_dict(q.get())
+    return q
+
+
+def add_new_nft_collection(name: str = None, address: str = None, slug: str = None):
+    """Добавляет новую коллекцию нфт"""
+    add_new_collection = WatchlistModel.create(name=name, address=address, slug=slug)
+    logger.info(f"Collection {add_new_collection.name} has been added")
+    return {'id': add_new_collection.id, 'name': add_new_collection.name, 'address': add_new_collection.address}
 
 
 def get_information_of_condition(user_id: int, nft_name: str):
@@ -95,3 +144,28 @@ def add_new_user(user_id: int, is_bot: bool, first_name: str, username: str, lan
     user, created = ProfileModel.get_or_create(user_id=user_id, is_bot=is_bot, first_name=first_name, username=username, lang_code=lang_code)
     logger.info(f"User has been added: {created}")
     return created
+
+
+def get_user_information(user_id: int = None):
+    return ProfileModel.select(ProfileModel).where(ProfileModel.user_id == user_id)
+
+
+def add_new_profiles_watchlist(user_pk_id: int, wl_id: int):
+    return ProfileWatchlistModel.create(profile_id=user_pk_id, watchlist_id=wl_id)
+
+
+def del_from_profiles_watchlist(user_id: int, wl_pk_id: int):
+    # query = (ProfileWatchlistModel
+    #          .delete()
+    #          .join(ProfileModel)
+    #          .where(ProfileWatchlistModel.profile_id == user_id, ProfileWatchlistModel.watchlist_id == wl_pk_id))
+    # return query.execute()
+    query = (ProfileWatchlistModel
+             .delete()
+             .where(ProfileWatchlistModel.watchlist_id == wl_pk_id)
+             .where(ProfileWatchlistModel.profile_id == ProfileModel.select(ProfileModel.id).where(ProfileModel.user_id == user_id))
+             )
+    return query.execute()
+
+# test = del_from_profiles_watchlist(user_id=902886808, wl_pk_id=9)
+# print(test)

@@ -19,6 +19,7 @@ async def selected_nft(call: CallbackQuery, state: FSMContext):
     из базы данных по данной нфт для конкретного юзера если она за ним привязана"""
     await call.answer(cache_time=10)
     call_data = call.data.split(':')
+    print('watchlist', call_data)
     nft_name = call_data[1].replace('_', ' ')
     info = get_information_of_selected_nft(nft_name)
     output_text = f"Here it is {info['name']}\n" \
@@ -33,7 +34,7 @@ async def edit_selected_nft(call: CallbackQuery, state: FSMContext):
     """Возвращает доступные условия для изменений"""
     await call.answer(cache_time=10)
     await state.reset_state(with_data=False)
-    print(call.data)
+    print(call.data, '<<<<<<')
     info_list = call.data.split(':')
     nft_name = info_list[-1].replace('_', ' ')
     condition_information = condition_data(user_id=call.from_user.id, nft_name=nft_name)
@@ -56,7 +57,7 @@ async def edit_selected_nft(call: CallbackQuery, state: FSMContext):
 
 async def edit_selected_conditions(call: CallbackQuery, state: FSMContext):
     """Принимает изменения по выбранному условию"""
-    print(call.data)
+    print(call.data, 'edit_selected_conditions')
     await call.answer(cache_time=10)
     cb_data = call.data.split(':')
     selected_condition = cb_data[1]

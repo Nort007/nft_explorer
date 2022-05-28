@@ -9,3 +9,7 @@ def prepare_text_to_choose_option(choose):
         return "Insert nft name"
     else:
         return "Insert contract address"
+
+
+def prepare_text_for_watchlist_menu():
+    return '🗂 User watchlist:'
