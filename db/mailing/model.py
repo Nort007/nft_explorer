@@ -4,10 +4,10 @@ from db.profiles.model import ProfileModel
 
 
 class MailingModel(BaseModel):
-    public_channel: str = CharField(max_length=254)
+    public_channel: str = CharField(max_length=254, null=True)
     chat_id: int = BigIntegerField(null=True)
     active: bool = BooleanField(default=False)
-    profile_id: int = ForeignKeyField(ProfileModel)
+    profile_id: int = ForeignKeyField(ProfileModel, unique=True)
 
     class Meta:
         table_name = 'mailing'

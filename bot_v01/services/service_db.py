@@ -7,6 +7,30 @@ import peewee
 from peewee import fn
 from bot_v01.misc import logger
 from db.base.base_model import psql_db
+from db.mailing.model import MailingModel
+
+
+@psql_db.atomic()
+def add_or_update_mailing(public_channel: str = None, chat_id: int = None, active: bool = False, user_pk_id: int = None):
+    try:
+        if chat_id is None:
+            q = MailingModel.create(public_channel=public_channel, active=active, profile_id=user_pk_id)
+        elif chat_id is not None:
+            q = MailingModel.create(chat_id=chat_id, active=active, profile_id=user_pk_id)
+        elif public_channel is None and chat_id is None:
+            return False
+        else:
+            return False
+    except peewee.IntegrityError as e:
+        print(e)
+        psql_db.rollback()
+        if chat_id is None:
+            q = MailingModel.update(public_channel=public_channel, active=active).where(MailingModel.profile_id == user_pk_id).execute()
+        elif chat_id is not None:
+            q = MailingModel.update(chat_id=chat_id, active=active).where(MailingModel.profile_id == user_pk_id).execute()
+        else:
+            return False
+    return q
 
 
 def is_banned(ban: bool, user_id: int):

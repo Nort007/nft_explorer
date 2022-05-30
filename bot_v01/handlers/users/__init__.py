@@ -3,6 +3,7 @@ from .my_watchlist import watchlist_command
 from .purchase import (selected_nft, edit_selected_nft, edit_selected_conditions, ConditionState, check_valid_condition)
 from .purchases_new_nft import new_nft_to_watchlist, NFTState, choosen_option, search_option
 from .purchases_del_nft import del_user_nft
+from .purchases_add_group_channel import user_channel_group, user_channel_group_handler, GrouChannelState
 
 
 def setup(dp: Dispatcher):
@@ -31,3 +32,8 @@ def setup_purchases_new_nft(dp: Dispatcher):
 def setup_delnft(dp: Dispatcher):
     dp.register_message_handler(watchlist_command, commands=['delnft'])
     dp.register_callback_query_handler(callback=del_user_nft, text_contains='del')
+
+
+def setup_add_group_channel(dp: Dispatcher):
+    dp.register_message_handler(user_channel_group, commands=['addgc'])
+    dp.register_message_handler(callback=user_channel_group_handler, state=GrouChannelState.group_or_channel)

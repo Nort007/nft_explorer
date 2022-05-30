@@ -24,6 +24,7 @@ def on_startup():
 
     middlewares.setup(dp)
     handlers.base.setup(dp)
+    handlers.users.setup_add_group_channel(dp)
     handlers.users.setup_purchases_new_nft(dp)
     handlers.users.setup(dp)
     handlers.users.setup_delnft(dp)
