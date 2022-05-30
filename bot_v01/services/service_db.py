@@ -115,7 +115,7 @@ def all_wl():
     return names
 
 
-def get_information_of_selected_nft(option: str, value: str):
+def get_information_of_selected_nft(value: str, option: str = 'name'):
     """Возвращает информацию об конкретной нфт"""
     # where_option = query_option(option)
     if option == 'name':
@@ -139,26 +139,29 @@ def add_new_nft_collection(name: str = None, address: str = None, slug: str = No
     return {'id': add_new_collection.id, 'name': add_new_collection.name, 'address': add_new_collection.address}
 
 
-def get_information_of_condition(user_id: int, nft_name: str):
+def get_information_of_condition(user_id: int, nft_wl_id: int):
     """Возвращает информацию по условиям конкретного нфт для конкретного юзера"""
     # ConditionModel.gt, ConditionModel.ge, ConditionModel.lt, ConditionModel.le, ConditionModel.eq
     q = (ConditionModel
          .select(ConditionModel)
          .join(WatchlistModel)
-         .where(ConditionModel.watchlist_id == WatchlistModel.select(WatchlistModel.id).where(fn.LOWER(WatchlistModel.name) == nft_name))
+         .where(ConditionModel.watchlist_id == WatchlistModel.select(WatchlistModel.id).where(WatchlistModel.id == nft_wl_id))
          .where(ConditionModel.profile_id == ProfileModel.select(ProfileModel.id).where(ProfileModel.user_id == user_id))
          )
     logger.debug(f"query: {q.sql()}")
-    return model_to_dict(q.get())
+    return q
 
 
-def update_selected_condition(user_id: int, nft_name: str, condition: str, value: str | float):
+def create_new_condition(user_pk_id: int, wl_pk_id: int):
+    return ConditionModel.create(profile_id=user_pk_id, watchlist_id=wl_pk_id)
+
+
+def update_selected_condition(user_pk: int, nft_pk: int, condition: str, value: str | float):
     """Обновляет выбранное условие по нфт"""
     q = (ConditionModel
          .update({f"{condition}": value})
-         .where(ConditionModel.profile_id == ProfileModel.select(ProfileModel.id).where(ProfileModel.user_id == user_id))
-         .where(ConditionModel.watchlist_id == WatchlistModel.select(WatchlistModel.id).where(fn.LOWER(WatchlistModel.name) == nft_name))
-         )
+         .where(ConditionModel.profile_id == user_pk)
+         .where(ConditionModel.watchlist_id == nft_pk))
     return q.execute()
 
 
