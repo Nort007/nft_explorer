@@ -14,7 +14,7 @@ def watchlist_menu(user_id, del_menu: bool = False):
     :return:
     """
     keyboard = InlineKeyboardMarkup(row_width=1)
-    user_watchlist = get_watchlist(user_id)
+    user_watchlist = get_watchlist(user_id=user_id)
     try:
         for watchlist in list(user_watchlist.dicts()):
             cb_action = re.sub('(:) | ()', '_', watchlist['name'].lower())

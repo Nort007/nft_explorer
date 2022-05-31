@@ -9,7 +9,6 @@ async def watchlist_command(q: types.Message | types.CallbackQuery):
     del_menu = False
     if q.text == '/delnft':
         del_menu = True
-    # print(watchlist_menu(q.from_user.id, del_menu=del_menu))
     if isinstance(q, types.Message):
         await q.answer(text_response, reply_markup=watchlist_menu(q.from_user.id, del_menu=del_menu))
     else:
