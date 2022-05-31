@@ -2,12 +2,30 @@ from db.profiles.model import ProfileModel
 from db.profiles_watchlist.model import ProfileWatchlistModel
 from db.watchlist.model import WatchlistModel
 from db.conditions.model import ConditionModel
-from playhouse.shortcuts import model_to_dict
+from db.mailing.model import MailingModel
+# from playhouse.shortcuts import model_to_dict
 import peewee
 from peewee import fn
 from bot_v01.misc import logger
 from db.base.base_model import psql_db
 from db.mailing.model import MailingModel
+
+
+def disclosure_fully_infromation_of_users():
+    """Custom request to prepare information about users and their settings from other tables."""
+    query = (ProfileWatchlistModel
+             .select(ProfileWatchlistModel.id, ProfileWatchlistModel.profile_id, WatchlistModel.name, WatchlistModel.address, WatchlistModel.slug,
+                     ProfileModel.first_name, ProfileModel.username, MailingModel.public_channel, MailingModel.chat_id)
+             .join(WatchlistModel, on=(ProfileWatchlistModel.watchlist_id == WatchlistModel.id))
+             .join(ProfileModel, on=(ProfileWatchlistModel.profile_id == ProfileModel.id))
+             .join(MailingModel, on=(ProfileWatchlistModel.profile_id == MailingModel.profile_id))
+             )
+    return query
+
+
+def get_mailing():
+    q = MailingModel.select()
+    return q
 
 
 @psql_db.atomic()
@@ -69,20 +87,23 @@ def query_option(option: str):
         raise ValueError(f"Option '{option}' is not supported")
 
 
-def get_watchlist(user_id: int = None, option: str = None, value: str = None):
+def get_watchlist(user_pk: int = None, user_id: int = None, option: str = None, value: str = None):
     """Список нфт отслеживаемые юзером, если нет параметров, то все коллекции отслеживаемые юзером."""
     watchlist: dict = {}
     if user_id is not None:
         query = (WatchlistModel
+                 .select(WatchlistModel, ProfileWatchlistModel, ProfileModel)
+                 .join(ProfileWatchlistModel)
+                 .join(ProfileModel)
+                 .where(ProfileModel.user_id == user_id))
+    elif user_pk is not None:
+        query = (WatchlistModel
                  .select(WatchlistModel)
                  .join(ProfileWatchlistModel)
                  .join(ProfileModel)
-                 .where(ProfileModel.user_id == user_id)
-                 )
-        # logger.debug(f"query: {query.sql()}")
-        # if len(query) > 0:
-        #     for i in query:
-        #         watchlist[i.name] = i.address
+                 .where(ProfileModel.id == user_pk))
+    else:
+        return
     return query
 
 
@@ -141,7 +162,6 @@ def add_new_nft_collection(name: str = None, address: str = None, slug: str = No
 
 def get_information_of_condition(user_id: int, nft_wl_id: int):
     """Возвращает информацию по условиям конкретного нфт для конкретного юзера"""
-    # ConditionModel.gt, ConditionModel.ge, ConditionModel.lt, ConditionModel.le, ConditionModel.eq
     q = (ConditionModel
          .select(ConditionModel)
          .join(WatchlistModel)
@@ -166,7 +186,6 @@ def update_selected_condition(user_pk: int, nft_pk: int, condition: str, value: 
 
 
 def add_new_user(user_id: int, is_bot: bool, first_name: str, username: str, lang_code: str):
-    # {"id":902886808,"is_bot":false,"first_name":"Alex","username":"flipphonebtc","language_code":"en"}
     """Добавляет нового юзера в базу данных"""
     user, created = ProfileModel.get_or_create(user_id=user_id, is_bot=is_bot, first_name=first_name, username=username, lang_code=lang_code)
     logger.info(f"User has been added: {created}")
@@ -182,17 +201,9 @@ def add_new_profiles_watchlist(user_pk_id: int, wl_id: int):
 
 
 def del_from_profiles_watchlist(user_id: int, wl_pk_id: int):
-    # query = (ProfileWatchlistModel
-    #          .delete()
-    #          .join(ProfileModel)
-    #          .where(ProfileWatchlistModel.profile_id == user_id, ProfileWatchlistModel.watchlist_id == wl_pk_id))
-    # return query.execute()
     query = (ProfileWatchlistModel
              .delete()
              .where(ProfileWatchlistModel.watchlist_id == wl_pk_id)
              .where(ProfileWatchlistModel.profile_id == ProfileModel.select(ProfileModel.id).where(ProfileModel.user_id == user_id))
              )
     return query.execute()
-
-# test = del_from_profiles_watchlist(user_id=902886808, wl_pk_id=9)
-# print(test)

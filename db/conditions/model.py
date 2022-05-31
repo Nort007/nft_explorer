@@ -15,11 +15,11 @@ class ConditionModel(BaseModel):
     """
     profile_id = ForeignKeyField(ProfileModel)
     watchlist_id = ForeignKeyField(WatchlistModel)
-    gt = FloatField(default=-1)
-    ge = FloatField(default=-1)
-    lt = FloatField(default=-1)
-    le = FloatField(default=-1)
-    eq = FloatField(default=-1)
+    gt = FloatField(null=True)
+    ge = FloatField(null=True)
+    lt = FloatField(null=True)
+    le = FloatField(null=True)
+    eq = FloatField(null=True)
 
     class Meta:
         db_table = 'conditions'
