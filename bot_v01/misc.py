@@ -14,7 +14,7 @@ if os.path.isfile(env):
     load_dotenv(env)
 TG_TOKEN = os.getenv('TG_TOKEN')
 bot = Bot(token=TG_TOKEN)
-storage = RedisStorage2(host='localhost', port=6379, password='WERKGPqoRTk7D', state_ttl=120, bucket_ttl=500, data_ttl=120)
+storage = RedisStorage2(host=os.getenv('REDIS_HOST'), port=int(os.getenv('REDIS_PORT')), state_ttl=120, bucket_ttl=500, data_ttl=120)
 dp = Dispatcher(bot, storage=storage)
 
 

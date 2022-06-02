@@ -11,8 +11,9 @@ psql_db = PostgresqlDatabase(
     database=os.getenv('PG_DB'),
     user=os.getenv('PG_USER'),
     password=os.getenv('PG_PASS'),
-    host='localhost',
-    port=os.getenv('PG_PORT'))
+    host=os.getenv('PG_HOST'),
+    port=os.getenv('PG_PORT')
+)
 
 
 class BaseModel(Model):
