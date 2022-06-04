@@ -35,7 +35,9 @@ def gem_collection(addr: str):
         req = driver.get(gem.by_collection_address())
         driver.implicitly_wait(10)
         response = gem.response_information()
-        return response
+        return {'name': response['data'][0]['name'],
+                'address': response['data'][0]['address'],
+                'slug': response['data'][0]['slug']}
     except Exception as e:
         logger.error(f"gem_collection: {e.args}")
         pass

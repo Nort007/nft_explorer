@@ -1,7 +1,7 @@
 from playhouse.shortcuts import model_to_dict
 
 from bot_v01.misc import logger
-from gem import information_by_address, information_by_name
+from gem import information_by_name, gem_collection as gem_collection_by_address
 from .service_db import (get_information_of_selected_nft, add_new_nft_collection, get_user_information, add_new_profiles_watchlist,
                          select_chosen_collection_by_user)
 
@@ -31,11 +31,12 @@ def bind_nft_to_user(*params, user_id):
                 new_collection = add_new_nft_collection(name=response_by_name['name'], slug=response_by_name['slug'])
                 datas.update(name_collection=new_collection['name'])
         else:
-            response_by_address = information_by_address(addr=params['name_or_address'])
+            response_by_address = gem_collection_by_address(addr=params['name_or_address'])
             if response_by_address is False:
                 return 'Collection not found, try again.'
             else:
-                new_collection = add_new_nft_collection(name=response_by_address['name_collection'], address=params['name_or_address'])
+                new_collection = add_new_nft_collection(name=response_by_address['name'], address=response_by_address['address'],
+                                                        slug=response_by_address['slug'])
                 datas.update(name_collection=new_collection['name'])
         datas.update(user_pk_id=user_info, wl_id=new_collection['id'])
     if datas['user_pk_id'] is not None:
