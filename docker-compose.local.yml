@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  bot:
+    build: .
+    command: 'python3.10 bot_v01/__main__.py'
+    volumes:
+      - ./:/home/nftuser/src/app
+  cache:
+    image: redis:latest
+    container_name: redis_cache
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - cache:/data
+  postgres:
+    image: library/postgres:14
+    container_name: postgres_db
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASS}
+      - POSTGRES_DB=${PG_DB}
+      - POSTGRES_PORT=${PG_PORT}
+    ports:
+      - "5432:5432"
+    volumes:
+      - $HOME/PycharmProjects/Server/.db_data:/var/lib/postgresql/data
+
+
+volumes:
+  .db_data:
+  cache:
+    driver: local
