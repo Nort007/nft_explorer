@@ -15,7 +15,8 @@ def disclosure_fully_infromation_of_users():
     """Custom request to prepare information about users and their settings from other tables."""
     query = (ConditionModel
              .select(ConditionModel.profile_id, ConditionModel.watchlist_id, ConditionModel.gt, ConditionModel.ge, ConditionModel.lt, ConditionModel.le,
-                     ConditionModel.eq, WatchlistModel.name, WatchlistModel.address, MailingModel.public_channel, MailingModel.chat_id, MailingModel.active,
+                     ConditionModel.eq, WatchlistModel.name, WatchlistModel.address, WatchlistModel.slug, MailingModel.public_channel, MailingModel.chat_id,
+                     MailingModel.active,
                      ProfileModel.first_name, ProfileModel.username)
              .join(WatchlistModel, on=(ConditionModel.watchlist_id == WatchlistModel.id))
              .join(MailingModel, on=(ConditionModel.profile_id == MailingModel.profile_id))

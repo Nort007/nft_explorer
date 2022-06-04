@@ -14,7 +14,7 @@ def all_channels_groups() -> dict:
         chat = str(data['chat_id']) if data['chat_id'] else str(data['public_channel'])
         if data['name'] in gc_dict.keys():
             cnt = gc_dict[data['name']]['results'] + 1
-            gc_dict[data['name']]['count'] = cnt
+            gc_dict[data['name']]['results'] = cnt
             gc_dict[data['name']].update({chat: {'conditions': {
                 'gt': data['gt'],
                 'ge': data['ge'],
@@ -24,6 +24,8 @@ def all_channels_groups() -> dict:
             }}})
         elif data['name'] not in gc_dict.keys():
             gc_dict[data['name']] = {
+                'address': data['address'],
+                'slug': data['slug'],
                 'results': 1,
                 chat: {
                     'conditions': {
