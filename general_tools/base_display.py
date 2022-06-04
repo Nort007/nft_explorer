@@ -1,5 +1,4 @@
 from pyvirtualdisplay import Display
-from random import randint
 
 
 class BaseDisplay:
@@ -10,3 +9,7 @@ class BaseDisplay:
 
     def start_display(self):
         self.display.start()
+        self.stop_display()
+
+    def stop_display(self):
+        self.display.stop()
