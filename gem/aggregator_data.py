@@ -1,11 +1,9 @@
-import json
-import time
-import requests
-from dotenv import load_dotenv
 import os
 from pathlib import Path
+
+import requests
+from dotenv import load_dotenv
 from pydantic import BaseModel
-from random import uniform, randint
 
 env = Path(os.path.dirname(__file__)).parent.resolve().joinpath('.env')
 if os.path.isfile(env):
@@ -80,7 +78,6 @@ class GemAggregator:
 
     def __header_for_search(self):
         self.header.update({'method': 'POST'})
-        self.header.update({'authority': 'search.gemlabs.xyz'})
         self.header.update({'path': '/search'})
 
     def __prepare_payload(self):
