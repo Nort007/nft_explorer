@@ -2,7 +2,7 @@ FROM python:3.10.4-buster
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH "${PYTHONPATH}:/home/nftuser/src/app"
+ENV PYTHONPATH "${PYTHONPATH}:/home/dockeruser/src/app"
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 
@@ -57,4 +57,5 @@ COPY --chown=nftuser:nftuser delivery_club/ delivery_club/
 COPY --chown=nftuser:nftuser docs/ docs/
 COPY --chown=nftuser:nftuser gem/ gem/
 COPY --chown=nftuser:nftuser opensea/ opensea/
+COPY --chown=nftuser:nftuser general_tools/ general_tools/
 COPY --chown=nftuser:nftuser .env .env
