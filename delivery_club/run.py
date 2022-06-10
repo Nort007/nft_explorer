@@ -14,8 +14,7 @@ async def main():
     for i, future in enumerate(asyncio.as_completed(futures)):
         results = await future
         if results['data']['collections'][0]['slug'] in slugs:
-            """Если slug из БД такой же как и в ответе от апи.
-            """
+            """If the slug from db as equal as in response from api."""
             floor = results['data']['collections'][0]['stats']['floor_price']
             name = results['data']['collections'][0]['name']
 
