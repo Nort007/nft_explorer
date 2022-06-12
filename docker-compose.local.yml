@@ -6,6 +6,16 @@ services:
     command: 'python3.10 bot_v01/__main__.py'
     volumes:
       - ./:/home/nftuser/src/app
+  web:
+    image: nft_explorer_bot:latest
+    container_name: web_nft_explorer_bot
+    command: 'python3 -m uvicorn api.main:app --host 0.0.0.0'
+    depends_on:
+      - bot
+    volumes:
+      - ./:/home/nftuser/src/app
+    ports:
+      - "8000:8000"
   cache:
     image: redis:latest
     container_name: redis_cache
