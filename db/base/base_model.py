@@ -1,19 +1,8 @@
-from peewee import PostgresqlDatabase, Model, DateTimeField
 from datetime import datetime
-from dotenv import load_dotenv
-from pathlib import Path
-import os
 
-env = Path(os.path.dirname(__file__)).parent.parent.resolve().joinpath('.env')
-if os.path.isfile(env):
-    load_dotenv(env)
-psql_db = PostgresqlDatabase(
-    database=os.getenv('PG_DB'),
-    user=os.getenv('PG_USER'),
-    password=os.getenv('PG_PASS'),
-    host=os.getenv('PG_HOST'),
-    port=os.getenv('PG_PORT')
-)
+from peewee import Model, DateTimeField
+
+from .database import db as psql_db
 
 
 class BaseModel(Model):
