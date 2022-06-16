@@ -6,16 +6,29 @@ services:
     command: 'python3.10 bot_v01/__main__.py'
     volumes:
       - ./:/home/nftuser/src/app
-  web:
-    image: nft_explorer_bot:latest
-    container_name: web_nft_explorer_bot
+  api:
+    build:
+      context: .
+      dockerfile: webapi.Dockerfile
+    container_name: api_nft_explorer
     command: 'python3 -m uvicorn api.main:app --host 0.0.0.0'
-    depends_on:
-      - bot
     volumes:
       - ./:/home/nftuser/src/app
     ports:
       - "8000:8000"
+  worker:
+    build:
+      context: .
+      dockerfile: worker.Dockerfile
+    container_name: worker_nft_explorer
+    command: 'python3 -m celery -A api.celery_worker worker -l debug -Q main_queue -c 1'
+    volumes:
+      - ./:/home/workerr/src/app
+    links:
+      - api
+    depends_on:
+      - api
+      - cache
   cache:
     image: redis:latest
     container_name: redis_cache
