@@ -13,7 +13,13 @@ class PeeweeGetterDict(GetterDict):
         return res
 
 
-class ProfileModel(BaseModel):
+class BaseConfigModel(BaseModel):
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
+
+
+class ProfileModel(BaseConfigModel):
     id: int = None
     user_id: int = None
     username: str = None
@@ -23,32 +29,12 @@ class ProfileModel(BaseModel):
     is_banned: bool = None
     count_of_ban: int = None
 
-    class Config:
-        orm_mode = True
-        getter_dict = PeeweeGetterDict
 
-
-class AccessTokenModel(BaseModel):
+class AccessTokenModel(BaseConfigModel):
     access_token: str = None
     token_type: str = None
 
-    class Config:
-        orm_mode = True
-        getter_dict = PeeweeGetterDict
 
-
-class UserLogin(ProfileModel):
+class UserLogin(BaseConfigModel):
     username: str = None
     one_time_code: int | str = None
-
-
-class TokenData(BaseModel):
-    user_id: str = None
-
-    class Config:
-        orm_mode = True
-        getter_dict = PeeweeGetterDict
-
-
-class TestUserSchema(BaseModel):
-    port: str = None
