@@ -8,6 +8,8 @@ services:
     command: 'python3.10 bot_v01/__main__.py'
     volumes:
       - ./:/home/nftuser/src/app
+    depends_on:
+      - postgres
   api:
     build:
       context: .
