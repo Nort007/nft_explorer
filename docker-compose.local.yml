@@ -2,7 +2,9 @@ version: '3.9'
 
 services:
   bot:
-    build: .
+    build:
+      context: .
+      dockerfile: bot.Dockerfile
     command: 'python3.10 bot_v01/__main__.py'
     volumes:
       - ./:/home/nftuser/src/app

@@ -25,7 +25,7 @@ USER ${USER_}
 WORKDIR src/app
 
 RUN pip3 install --user --upgrade pip
-RUN pip3 install --user celery redis aiohttp aiodns python-dotenv
+RUN pip3 install --user celery redis aiohttp aiodns python-dotenv coloredlogs
 
 COPY --chown=${USER_}:${USER_} start_worker.sh .
 COPY --chown=${USER_}:${USER_} api/ api/

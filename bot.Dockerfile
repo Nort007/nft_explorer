@@ -1,10 +1,11 @@
 FROM python:3.10.4-buster
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH "${PYTHONPATH}:/home/nftuser/src/app"
 ARG USER_ID=1000
 ARG GROUP_ID=1000
+ARG USER_=nftuser
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONPATH "${PYTHONPATH}:/home/${USER_}/src/app"
 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y nano xvfb chromium-driver htop
@@ -26,23 +27,23 @@ RUN curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-ke
 
 
 #Create user
-RUN groupadd -g ${GROUP_ID} nftuser &&\
-    useradd -l -u ${USER_ID}  -g nftuser nftuser &&\
-    install -d -m 0755 -o nftuser -g nftuser /home/nftuser &&\
+RUN groupadd -g ${GROUP_ID} ${USER_} &&\
+    useradd -l -u ${USER_ID}  -g ${USER_} ${USER_} &&\
+    install -d -m 0755 -o ${USER_} -g ${USER_} /home/${USER_} &&\
     chown --changes --silent --no-dereference --recursive \
     --from=33:33 ${USER_ID}:${GROUP_ID} \
-    /home/nftuser
+    /home/${USER_}
 
-WORKDIR /home/nftuser
+WORKDIR /home/${USER_}
 
 RUN mkdir -p src/app
-RUN chown -R nftuser:nftuser .
+RUN chown -R ${USER_}:${USER_} .
 
-USER nftuser
+USER ${USER_}
 
 WORKDIR src/app
 
-COPY --chown=nftuser:nftuser ./requirements.txt .
+COPY --chown=${USER_}:${USER_} ./requirements.txt .
 
 RUN pip3 install --user --upgrade pip
 
@@ -51,11 +52,11 @@ RUN pip3 install --user -r requirements.txt
 ENV PATH="${HOME}/.local/bin:${PATH}"
 
 # Копировать код
-COPY --chown=nftuser:nftuser bot_v01/ bot_v01/
-COPY --chown=nftuser:nftuser db/ db/
-COPY --chown=nftuser:nftuser delivery_club/ delivery_club/
-COPY --chown=nftuser:nftuser docs/ docs/
-COPY --chown=nftuser:nftuser gem/ gem/
-COPY --chown=nftuser:nftuser opensea/ opensea/
-COPY --chown=nftuser:nftuser general_tools/ general_tools/
-COPY --chown=nftuser:nftuser .env .env
+COPY --chown=${USER_}:${USER_} bot_v01/ bot_v01/
+COPY --chown=${USER_}:${USER_} db/ db/
+COPY --chown=${USER_}:${USER_} delivery_club/ delivery_club/
+COPY --chown=${USER_}:${USER_} docs/ docs/
+COPY --chown=${USER_}:${USER_} gem/ gem/
+COPY --chown=${USER_}:${USER_} opensea/ opensea/
+COPY --chown=${USER_}:${USER_} general_tools/ general_tools/
+COPY --chown=${USER_}:${USER_} .env .env
