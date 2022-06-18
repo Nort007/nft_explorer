@@ -1,2 +1,0 @@
-from general_tools.base_display import BaseDisplay
-from general_tools.fake_user_agent import user_agent
