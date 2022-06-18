@@ -4,10 +4,7 @@ from datetime import datetime, timedelta
 
 import jwt
 
-from core.config import SECRET_KEY, TTL_TRIGGER
-
-ALGORITHM = 'HS256'
-access_token_jwt_subject = 'access'
+from core.config import JWT_SECRET_KEY, TTL_TRIGGER, JWT_ALGORITHM, ACCESS_TOKEN_JWT_SUBJECT
 
 
 def create_access_token(*, data: dict, expires_delta: timedelta = None):
@@ -16,8 +13,8 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None):
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=1)
-    to_encode.update({'exp': expire, 'sub': access_token_jwt_subject})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    to_encode.update({'exp': expire, 'sub': ACCESS_TOKEN_JWT_SUBJECT})
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
     return encoded_jwt
 
 
