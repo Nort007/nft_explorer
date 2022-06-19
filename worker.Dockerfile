@@ -25,11 +25,10 @@ USER ${USER_}
 WORKDIR src/app
 
 RUN pip3 install --user --upgrade pip
-RUN pip3 install --user celery redis aiohttp aiodns python-dotenv coloredlogs
+RUN pip3 install --default-timeout=300 --user celery redis aiohttp aiodns python-dotenv coloredlogs
 
 COPY --chown=${USER_}:${USER_} start_worker.sh .
 COPY --chown=${USER_}:${USER_} api/ api/
 COPY --chown=${USER_}:${USER_} core/ core/
 COPY --chown=${USER_}:${USER_} db/ db/
-COPY --chown=${USER_}:${USER_} .env .env
-#RUN chmod +x start_worker.sh
+COPY --chown=${USER_}:${USER_} .env.example .env.example

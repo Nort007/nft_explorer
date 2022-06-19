@@ -28,7 +28,7 @@ WORKDIR src/app
 COPY --chown=${USER_}:${USER_} ./requirements.txt .
 
 RUN pip3 install --user --upgrade pip
-RUN pip3 install --user -r requirements.txt
+RUN pip3 install --default-timeout=300 --user -r requirements.txt
 
 ENV PATH="${HOME}/.local/bin:${PATH}"
 
@@ -36,4 +36,4 @@ ENV PATH="${HOME}/.local/bin:${PATH}"
 COPY --chown=${USER_}:${USER_} api/ api/
 COPY --chown=${USER_}:${USER_} core/ core/
 COPY --chown=${USER_}:${USER_} db/ db/
-COPY --chown=${USER_}:${USER_} .env .env
+COPY --chown=${USER_}:${USER_} .env.example .env.example

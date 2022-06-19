@@ -47,7 +47,7 @@ COPY --chown=${USER_}:${USER_} ./requirements.txt .
 
 RUN pip3 install --user --upgrade pip
 
-RUN pip3 install --user -r requirements.txt
+RUN pip3 install --default-timeout=300 --user -r requirements.txt
 
 ENV PATH="${HOME}/.local/bin:${PATH}"
 
@@ -55,8 +55,7 @@ ENV PATH="${HOME}/.local/bin:${PATH}"
 COPY --chown=${USER_}:${USER_} bot_v01/ bot_v01/
 COPY --chown=${USER_}:${USER_} db/ db/
 COPY --chown=${USER_}:${USER_} delivery_club/ delivery_club/
-COPY --chown=${USER_}:${USER_} docs/ docs/
 COPY --chown=${USER_}:${USER_} gem/ gem/
 COPY --chown=${USER_}:${USER_} opensea/ opensea/
-COPY --chown=${USER_}:${USER_} general_tools/ general_tools/
-COPY --chown=${USER_}:${USER_} .env .env
+COPY --chown=${USER_}:${USER_} selenium_tools/ selenium_tools/
+COPY --chown=${USER_}:${USER_} .env.example .env.example
