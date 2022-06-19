@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 
-from general_tools import BaseDisplay
-from general_tools import user_agent
+from selenium_tools import BaseDisplay
+from selenium_tools import user_agent
 
 env = Path(os.path.dirname(__file__)).parent.resolve().joinpath('.env')
 if os.path.isfile(env):

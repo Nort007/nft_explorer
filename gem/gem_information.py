@@ -1,8 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-from general_tools import BaseDisplay
-from general_tools import user_agent
+from selenium_tools import BaseDisplay
+from selenium_tools import user_agent
 
 URL = 'https://gem.xyz'
 
