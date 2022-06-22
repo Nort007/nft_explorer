@@ -15,5 +15,4 @@ jobs:
           key: ${{ secrets.NNE_SECRET_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            git pull origin develop
-            git status
+            ls -all
