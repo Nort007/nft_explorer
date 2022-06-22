@@ -4,10 +4,10 @@ on:
     branches: [ "develop" ]
 jobs:
   job_one:
-    name: Deploy
+    name: Deploy 
     runs-on: ubuntu-latest
     steps:
-      - name: test api.xxx.web ssh connection
+      - name: test connect ssh connection
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
