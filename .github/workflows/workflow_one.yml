@@ -1,0 +1,19 @@
+name: Deployment
+on:
+  push:
+    branches: [ "develop" ]
+jobs:
+  job_one:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: test api.xxx.web ssh connection
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.NNE_SECRET_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            git pull origin develop
+            git status
