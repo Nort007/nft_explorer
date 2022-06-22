@@ -13,6 +13,5 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.NNE_SECRET_KEY }}
-          port: ${{ secrets.PORT }}
           script: |
             ls -all
