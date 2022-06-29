@@ -25,7 +25,7 @@ def auth_user(host: str, port: int, username: str, user_id: int | str, user_code
     if len(user_info_redis) == 0:
         one_time_code = get_one_time_code()
         celery_app.send_task('api.celery_worker.celery_put_in_redis',
-                             args=[host, {'port': port, 'username': username, 'user_id': user_id, 'one_time_code': one_time_code}, True]
+                             args=[host, {'port': port, 'username': username, 'user_id': user_id, 'one_time_code': one_time_code}]
                              )
         celery_app.send_task('api.celery_worker.send_code', args=[username, user_id, one_time_code])
         return {

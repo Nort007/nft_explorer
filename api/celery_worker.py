@@ -15,6 +15,6 @@ def send_code(username: str, user_id: int, code: int | str):
 
 
 @celery_app.task(acks_late=True)
-def celery_put_in_redis(key: str, datas: dict, expire: bool):
+def celery_put_in_redis(key: str, datas: dict):
     """This function implements the putting of the data in redis by celery."""
-    return put_hset_in_redis(key=key, datas=datas, expire=expire)
+    return put_hset_in_redis(key=key, datas=datas)
