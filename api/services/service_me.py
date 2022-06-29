@@ -6,7 +6,7 @@ from api.services.service_db import get_user
 from api.services.service_redis import put_hset_in_redis
 from core.config import JWT_SECRET_KEY, TTL_REFRESH, JWT_ALGORITHM
 from core.jwt import refresh_jwt_token
-from db.token.schema import TokenPayload
+from schemas import TokenPayload
 from .security import get_user_token
 
 
@@ -18,7 +18,6 @@ def get_current_user(user_headers: dict, host: str, port: int):
         token = get_user_token(host)
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
-        print(payload, 'payload get current user<<')
         token_data = TokenPayload(**payload)
     except jwt.PyJWTError:
         raise user_forbidden()

@@ -8,14 +8,13 @@ from api.services.exceptions import user_not_found
 from api.services.security import auth_user
 from api.services.service_db import get_user
 from core.logger_config import logger
-from db.profiles import schemas
-from db.token.schema import Token, SuccessToken
+from schemas import Token, SuccessToken, UserLogin
 
 router = APIRouter()
 
 
 @router.post('/login', response_model=Union[Token, SuccessToken], dependencies=[Depends(get_db)])
-def login(user: schemas.UserLogin, request: Request):
+def login(user: UserLogin, request: Request):
     db_user = get_user(username=user.username)
     logger.debug('USER: %s', db_user)
     if db_user is None:
