@@ -9,8 +9,9 @@ from schemas import UserModel
 router = APIRouter()
 
 
-@router.get('/me', response_model=UserModel, dependencies=[Depends(get_db)])
-def read_me(request: Request):
-    user = get_current_user(request.headers, request.client.host, request.client.port)
+@router.get('/user', response_model=UserModel, dependencies=[Depends(get_db)])
+def user_information(request: Request):
+    """Bla bla bla"""
+    user = get_current_user(dict(request.headers), request.client.host, request.client.port)
     logger.debug('USER: %s %s', user.username, user.user_id)
     return user
