@@ -2,9 +2,9 @@
 from fastapi import Depends, Request, APIRouter
 
 from api.api_db_utils import get_db
-from api.services.service_me import get_current_user
+from api.services.service_user import get_current_user, get_is_active
 from core.logger_config import logger
-from schemas import UserModel
+from schemas import UserModel, UserIsActive
 
 router = APIRouter()
 
@@ -15,3 +15,9 @@ def user_information(request: Request):
     user = get_current_user(dict(request.headers), request.client.host, request.client.port)
     logger.debug('USER: %s %s', user.username, user.user_id)
     return user
+
+
+@router.get('/is-active', response_model=UserIsActive, dependencies=[Depends(get_db)])
+def is_active(request: Request):
+    user_is_active = get_is_active(request.client.host)
+    return user_is_active

@@ -3,7 +3,7 @@ import jwt
 
 from api.services.exceptions import user_forbidden, user_not_found
 from api.services.service_db import get_user
-from api.services.service_redis import put_hset_in_redis
+from api.services.service_redis import put_hset_in_redis, hget_from_redis
 from core.config import JWT_SECRET_KEY, TTL_REFRESH, JWT_ALGORITHM
 from core.jwt import refresh_jwt_token
 from schemas import TokenPayload
@@ -28,3 +28,9 @@ def get_current_user(user_headers: dict, host: str, port: int):
     if refresh_token is not None:
         put_hset_in_redis(key=host, datas={'token': refresh_token}, expire=TTL_REFRESH)
     return user
+
+
+def get_is_active(host: str, field: str = 'active'):
+    if hget_from_redis(hash_key=host, field=field):
+        return {"is_active": True}
+    return False
