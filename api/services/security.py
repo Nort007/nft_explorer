@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from api.services.one_time_code import get_one_time_code
 from api.services.service_redis import hdel_from_redis, put_hset_in_redis
@@ -24,8 +24,14 @@ def auth_user(host: str, port: int, username: str, user_id: int | str, user_code
     logger.debug('USER INFO FROM REDIS: %s', user_info_redis)
     if len(user_info_redis) == 0:
         one_time_code = get_one_time_code()
+        datas: dict = {
+            f'port_{int(datetime.timestamp(datetime.now()))}': port,
+            'username': username,
+            'user_id': user_id,
+            'one_time_code': one_time_code,
+        }
         celery_app.send_task('api.celery_worker.celery_put_in_redis',
-                             args=[host, {'port': port, 'username': username, 'user_id': user_id, 'one_time_code': one_time_code}]
+                             args=[host, datas]
                              )
         celery_app.send_task('api.celery_worker.send_code', args=[username, user_id, one_time_code])
         return {
