@@ -7,8 +7,8 @@ from core.redis_app import redis_app
 def put_hset_in_redis(key: str, datas: dict, expire: int = TTL_SECONDS):
     """This updates some datas and put their in redis and then expire TTL
     more info about hset: https://redis.io/commands/hset"""
-    for k, v in datas.items():
-        redis_app.hset(key, k, v)
+    for field, value in datas.items():
+        redis_app.hset(key, field, value)
     redis_app.expire(key, expire)
     return True
 
