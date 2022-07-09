@@ -16,6 +16,9 @@ services:
       dockerfile: webapi.Dockerfile
     container_name: api_nft_explorer
     command: 'python3 -m uvicorn api.main:app --host 0.0.0.0'
+    depends_on:
+      - postgres
+    restart: always
     volumes:
       - ./:/home/nftuser/src/app
     ports:
@@ -28,11 +31,11 @@ services:
     command: 'python3 -m celery -A api.celery_worker worker -l debug -Q main_queue -c 1'
     volumes:
       - ./:/home/workerr/src/app
-    links:
-      - api
+    #    links:
+    #      - api
     depends_on:
       - api
-      - cache
+  #      - cache
   cache:
     image: redis:latest
     container_name: redis_cache
