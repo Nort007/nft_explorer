@@ -57,7 +57,7 @@ def activate_one_time_code(host: str, token: str):
     :param host: user ip address.
     :param token: user token.
     :return: None."""
-    put_hset_in_redis(key=host, datas={'token': token, 'activated': 1})
+    put_hset_in_redis(key=host, datas={'token': token, 'active': 1})
     hdel_from_redis(key=host, datas=['one_time_code'])
 
 
