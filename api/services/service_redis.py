@@ -19,3 +19,10 @@ def hdel_from_redis(key: str, datas: list):
     for val in datas:
         redis_app.hdel(key, val)
     return True
+
+
+def hget_from_redis(hash_key: str, field: str):
+    """Get values from an inner field belonging hash key."""
+    resp = redis_app.hget(hash_key, field)
+    logger.debug('hget variable `%s`: %s' % (field, resp))
+    return resp
